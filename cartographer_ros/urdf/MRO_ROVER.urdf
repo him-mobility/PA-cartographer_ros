@@ -1,0 +1,560 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot name="MRO_ROVER">
+    <link name="base_link">
+        <inertial>
+            <origin xyz="-0.02130689469013353 -1.0732882396820453e-15 0.17302888441944222" rpy="0.0 0.0 0.0" />
+            <mass value="14.699480021920964" />
+            <inertia ixx="0.45829279937930645" iyy="0.7811843404218002" izz="0.9382734399469362" ixy="-7.236699768254892e-15" iyz="6.3575862487953336e-15" ixz="-0.030056237041105775" />
+        </inertial>
+        <visual name="base_link_visual">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/base_link.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="base_link_collision">
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/base_link.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="arm_R">
+        <inertial>
+            <origin xyz="0.052636672606593944 0.048358606727356444 0.01499999999999325" rpy="0.0 -0.0 0.0" />
+            <mass value="1.315279562443129" />
+            <inertia ixx="0.002048191715250912" iyy="0.007442088096824728" izz="0.009292987877709016" ixy="-0.00042359143704755013" iyz="5.204170427930421e-17" ixz="9.298117831235686e-16" />
+        </inertial>
+        <visual name="arm_R_visual">
+            <origin xyz="-0.08000000000002377 0.1235 -0.1819999999999892" rpy="1.5707963267948968 -1.5707963267947658 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/arm_R.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="arm_R_collision">
+            <origin xyz="-0.08000000000002377 0.1235 -0.1819999999999892" rpy="1.5707963267948968 -1.5707963267947658 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/arm_R.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="arm_L">
+        <inertial>
+            <origin xyz="0.05263667260659203 -0.04835860672735628 0.014999999999999077" rpy="0.0 -0.0 0.0" />
+            <mass value="1.315279562443129" />
+            <inertia ixx="0.0020481917152511547" iyy="0.007442088096824229" izz="0.009292987877708887" ixy="0.0004235914370475744" iyz="8.673617379884035e-17" ixz="-2.7755575615628914e-17" />
+        </inertial>
+        <visual name="arm_L_visual">
+            <origin xyz="-0.07999999999999823 -0.12349999999999957 0.21199999999999988" rpy="-1.5707963267948966 1.5707963267948875 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/arm_L.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="arm_L_collision">
+            <origin xyz="-0.07999999999999823 -0.12349999999999957 0.21199999999999988" rpy="-1.5707963267948966 1.5707963267948875 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/arm_L.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="MDH300_R">
+        <inertial>
+            <origin xyz="-7.493708798431253e-05 -0.042682781527767374 -1.7314293562136754e-14" rpy="6.908934844075556e-77 -0.0 0.0" />
+            <mass value="2.37661803615355" />
+            <inertia ixx="0.004030780055031491" iyy="0.006883449839210113" izz="0.0040239398638153845" ixy="-4.170532491604151e-06" iyz="-5.892260992857972e-17" ixz="1.1017939052648167e-18" />
+        </inertial>
+        <visual name="MDH300_R_visual">
+            <origin xyz="-8.881784197001253e-18 -0.06709999999998939 -5.46309356140322e-17" rpy="2.832504115412765e-29 1.5707963267948966 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/MDH300_R.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="MDH300_R_collision">
+            <origin xyz="-8.881784197001253e-18 -0.06709999999998939 -5.46309356140322e-17" rpy="2.832504115412765e-29 1.5707963267948966 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/MDH300_R.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="MDH300_L">
+        <inertial>
+            <origin xyz="-7.493708798398834e-05 -0.04268278152777729 -1.532073570502668e-14" rpy="2.430865342914509e-63 -0.0 0.0" />
+            <mass value="2.37661803615355" />
+            <inertia ixx="0.004030780055031491" iyy="0.006883449839210085" izz="0.004023939863815327" ixy="-4.17053249160415e-06" iyz="-1.99999739728146e-16" ixz="1.310294021533578e-18" />
+        </inertial>
+        <visual name="MDH300_L_visual">
+            <origin xyz="3.1530333899354444e-16 -0.06709999999999926 3.1435935429627667e-15" rpy="2.487095351956682e-30 1.5707963267948473 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/MDH300_L.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="MDH300_L_collision">
+            <origin xyz="3.1530333899354444e-16 -0.06709999999999926 3.1435935429627667e-15" rpy="2.487095351956682e-30 1.5707963267948473 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/MDH300_L.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Omni-wheel_RF">
+        <inertial>
+            <origin xyz="-5.8306792174416254e-05 -0.03008368124417874 -2.7817748105007923e-14" rpy="6.908934844075556e-77 -0.0 0.0" />
+            <mass value="1.2748590371080126" />
+            <inertia ixx="0.0013770121453190454" iyy="0.0022106961833030167" izz="0.0013751572833957532" ixy="-1.5547714865130936e-06" iyz="-6.245004513516503e-17" ixz="3.0357660829594124e-18" />
+        </inertial>
+        <visual name="Omni-wheel_RF_visual">
+            <origin xyz="-9.992007221626409e-17 -0.052000000000015235 1.4210854715202004e-16" rpy="2.8362014733021326e-29 1.5707963267948966 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_RF.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Omni-wheel_RF_collision">
+            <origin xyz="-9.992007221626409e-17 -0.052000000000015235 1.4210854715202004e-16" rpy="2.8362014733021326e-29 1.5707963267948966 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_RF.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Omni-wheel_RR">
+        <inertial>
+            <origin xyz="2.7959856652159943e-14 -5.830679217435853e-05 0.030083681244163395" rpy="0.0 -0.0 0.0" />
+            <mass value="1.2748590371080126" />
+            <inertia ixx="0.001375157283395767" iyy="0.0013770121453190592" izz="0.0022106961833030236" ixy="-3.0357660829594124e-18" iyz="1.5547714865130936e-06" ixz="-6.245004513516506e-17" />
+        </inertial>
+        <visual name="Omni-wheel_RR_visual">
+            <origin xyz="0.0 -4.218847493575595e-17 0.05199999999999989" rpy="-1.5707963267948966 -3.697785493223483e-32 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_RR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Omni-wheel_RR_collision">
+            <origin xyz="0.0 -4.218847493575595e-17 0.05199999999999989" rpy="-1.5707963267948966 -3.697785493223483e-32 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_RR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Omni-wheel_LF">
+        <inertial>
+            <origin xyz="-5.830679217402546e-05 -0.030083681244165206 -2.8030910925735954e-14" rpy="2.430865342914509e-63 -0.0 0.0" />
+            <mass value="1.2748590371080126" />
+            <inertia ixx="0.0013770121453190454" iyy="0.0022106961833030367" izz="0.001375157283395725" ixy="-1.554771486513527e-06" iyz="-7.632783294297949e-17" ixz="3.4694469519536138e-18" />
+        </inertial>
+        <visual name="Omni-wheel_LF_visual">
+            <origin xyz="2.9087843245179103e-16 -0.05200000000000184 1.0658141036401502e-16" rpy="2.486274401753963e-30 1.570796326794889 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_LF.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Omni-wheel_LF_collision">
+            <origin xyz="2.9087843245179103e-16 -0.05200000000000184 1.0658141036401502e-16" rpy="2.486274401753963e-30 1.570796326794889 0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_LF.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Omni-wheel_LR">
+        <inertial>
+            <origin xyz="-2.8599345114344035e-14 -5.8306792174345205e-05 -0.03008368124416336" rpy="0.0 -0.0 0.0" />
+            <mass value="1.2748590371080126" />
+            <inertia ixx="0.001375157283395767" iyy="0.0013770121453190592" izz="0.0022106961833030167" ixy="2.6020852139652106e-18" iyz="-1.5547714865135273e-06" ixz="-4.1770301482601283e-17" />
+        </inertial>
+        <visual name="Omni-wheel_LR_visual">
+            <origin xyz="-1.2434497875801754e-15 -2.886579864025407e-17 -0.05199999999999982" rpy="1.5707963267948966 -2.8393953854788385e-14 3.141592653589793" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_LR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Omni-wheel_LR_collision">
+            <origin xyz="-1.2434497875801754e-15 -2.886579864025407e-17 -0.05199999999999982" rpy="1.5707963267948966 -2.8393953854788385e-14 3.141592653589793" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_LR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="MDH300_tire_R">
+        <inertial>
+            <origin xyz="7.105427357601002e-17 -2.6645352591003756e-17 -0.02300000000001063" rpy="0.0 -0.0 0.0" />
+            <mass value="0.42127475403682413" />
+            <inertia ixx="0.001663531029770321" iyy="0.001663531029770321" izz="0.0032181422127156166" ixy="0.0" iyz="0.0" ixz="0.0" />
+        </inertial>
+        <visual name="MDH300_tire_R_visual">
+            <origin xyz="7.105427357601002e-17 -2.6645352591003756e-17 -1.0622613899613499e-14" rpy="-1.5707963267948966 4.1877739017706484e-60 -1.479114197215285e-31" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/MDH300_tire_R.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="MDH300_tire_R_collision">
+            <origin xyz="7.105427357601002e-17 -2.6645352591003756e-17 -1.0622613899613499e-14" rpy="-1.5707963267948966 4.1877739017706484e-60 -1.479114197215285e-31" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/MDH300_tire_R.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="MDH300_tire_L">
+        <inertial>
+            <origin xyz="3.144151605738443e-15 3.1530333899354444e-16 0.02300000000000079" rpy="-6.223015277861143e-61 -1.381786968815112e-76 -5.473822126268818e-48" />
+            <mass value="0.42127475403682413" />
+            <inertia ixx="0.0016635310297703067" iyy="0.001663531029770307" izz="0.0032181422127156153" ixy="-6.0809574099136554e-33" iyz="-1.3010426069826051e-18" ixz="-5.911478245667282e-32" />
+        </inertial>
+        <visual name="MDH300_tire_L_visual">
+            <origin xyz="3.1441516057384434e-15 3.1530333899354444e-16 0.04600000000000083" rpy="-1.5707963267948966 -6.310887241768104e-30 -2.7879045095969387e-16" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/MDH300_tire_L.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="MDH300_tire_L_collision">
+            <origin xyz="3.1441516057384434e-15 3.1530333899354444e-16 0.04600000000000083" rpy="-1.5707963267948966 -6.310887241768104e-30 -2.7879045095969387e-16" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/MDH300_tire_L.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Omni-wheel_tire_RF">
+        <inertial>
+            <origin xyz="-1.4210854715202004e-16 -9.992007221626409e-17 -0.01999999999998465" rpy="0.0 -0.0 0.0" />
+            <mass value="0.2514541693559252" />
+            <inertia ixx="0.0006248687901035197" iyy="0.000624868790103518" izz="0.0012006933303007963" ixy="-8.551051523208666e-52" iyz="1.0842021724855044e-19" ixz="-1.3144763436527259e-50" />
+        </inertial>
+        <visual name="Omni-wheel_tire_RF_visual">
+            <origin xyz="-1.4210854715202004e-16 -9.992007221626409e-17 1.5347723092418165e-14" rpy="-1.5707963267948966 -5.4738221262685274e-48 -1.0183354573559864e-32" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_tire_RF.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Omni-wheel_tire_RF_collision">
+            <origin xyz="-1.4210854715202004e-16 -9.992007221626409e-17 1.5347723092418165e-14" rpy="-1.5707963267948966 -5.4738221262685274e-48 -1.0183354573559864e-32" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_tire_RF.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Omni-wheel_tire_RR">
+        <inertial>
+            <origin xyz="-1.0658141036401502e-16 -3.552713678800501e-17 -0.02" rpy="0.0 -0.0 0.0" />
+            <mass value="0.2514541693559252" />
+            <inertia ixx="0.000624868790103518" iyy="0.000624868790103518" izz="0.0012006933303008015" ixy="-1.0842021724855044e-19" iyz="2.168404344971009e-19" ixz="-6.57238171826392e-51" />
+        </inertial>
+        <visual name="Omni-wheel_tire_RR_visual">
+            <origin xyz="-1.0658141036401502e-16 -3.552713678800501e-17 0.0" rpy="-1.5707963267948966 -5.47388476919171e-48 5.6973406474558776e-65" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_tire_RR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Omni-wheel_tire_RR_collision">
+            <origin xyz="-1.0658141036401502e-16 -3.552713678800501e-17 0.0" rpy="-1.5707963267948966 -5.47388476919171e-48 5.6973406474558776e-65" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_tire_RR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Omni-wheel_tire_LF">
+        <inertial>
+            <origin xyz="1.0658141036401502e-16 2.9087843245179103e-16 0.019999999999998155" rpy="0.0 -5.406223141201615e-108 0.0" />
+            <mass value="0.2514541693559252" />
+            <inertia ixx="0.0006248687901035214" iyy="0.0006248687901035249" izz="0.0012006933303007998" ixy="1.0842021724855044e-19" iyz="2.168404344971009e-19" ixz="1.734723475976807e-18" />
+        </inertial>
+        <visual name="Omni-wheel_tire_LF_visual">
+            <origin xyz="1.0658141036401502e-16 2.9087843245179103e-16 0.039999999999998155" rpy="-1.5707963267948966 -2.2239698220679748e-45 -2.787904509596937e-16" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_tire_LF.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Omni-wheel_tire_LF_collision">
+            <origin xyz="1.0658141036401502e-16 2.9087843245179103e-16 0.039999999999998155" rpy="-1.5707963267948966 -2.2239698220679748e-45 -2.787904509596937e-16" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_tire_LF.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Omni-wheel_tire_LR">
+        <inertial>
+            <origin xyz="-6.750155989720952e-16 -5.995204332975846e-16 0.020000000000000177" rpy="0.0 -0.0 0.0" />
+            <mass value="0.2514541693559252" />
+            <inertia ixx="0.000624868790103518" iyy="0.0006248687901035214" izz="0.0012006933303008015" ixy="-6.844981654752573e-63" iyz="-1.6046192152785466e-17" ixz="1.5612511283791264e-17" />
+        </inertial>
+        <visual name="Omni-wheel_tire_LR_visual">
+            <origin xyz="-1.0658141036401502e-16 -1.1657341758564144e-15 0.04000000000000018" rpy="-1.5707963267948684 -2.825517597671035e-14 1.5707963267948966" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_tire_LR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Omni-wheel_tire_LR_collision">
+            <origin xyz="-1.0658141036401502e-16 -1.1657341758564144e-15 0.04000000000000018" rpy="-1.5707963267948684 -2.825517597671035e-14 1.5707963267948966" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Omni-wheel_tire_LR.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="velodyne_front_bottom">
+        <inertial>
+            <origin xyz="-0.0003948246589800775 3.716860666442815e-15 0.03615426640249702" rpy="0.0 -0.0 0.0" />
+            <mass value="0.8871540608965255" />
+            <inertia ixx="0.001534606650277326" iyy="0.0015542612528998976" izz="0.0017617879789866842" ixy="1.9730592288597075e-16" iyz="8.927936154226536e-17" ixz="-9.161062727483515e-06" />
+        </inertial>
+        <visual name="velodyne_front_bottom_visual">
+            <origin xyz="0.0 -1.06581410364015e-16 -7.105427357601002e-17" rpy="5.783306664992792e-17 2.25514051876985e-16 2.1632341619892085e-16" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/velodyne_front_bottom.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="velodyne_front_bottom_collision">
+            <origin xyz="0.0 -1.06581410364015e-16 -7.105427357601002e-17" rpy="5.783306664992792e-17 2.25514051876985e-16 2.1632341619892085e-16" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/velodyne_front_bottom.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="velodyne_rear_top">
+        <inertial>
+            <origin xyz="-0.0003948198555686133 3.877585912487466e-15 0.036154269011238575" rpy="0.0 -0.0 0.0" />
+            <mass value="0.8871540608965255" />
+            <inertia ixx="0.001534606650277335" iyy="0.0015542612528998412" izz="0.0017617879789866772" ixy="1.9855356494494896e-16" iyz="9.146742862057962e-17" ixz="-9.161062727475059e-06" />
+        </inertial>
+        <visual name="velodyne_rear_top_visual">
+            <origin xyz="4.803411464138208e-09 1.7763568394002505e-17 2.608741382914559e-09" rpy="-2.173405515437115e-16 -8.881784197001248e-16 -2.4651903288156608e-32" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/velodyne_rear_top.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="velodyne_rear_top_collision">
+            <origin xyz="4.803411464138208e-09 1.7763568394002505e-17 2.608741382914559e-09" rpy="-2.173405515437115e-16 -8.881784197001248e-16 -2.4651903288156608e-32" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/velodyne_rear_top.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="imu_link">
+        <inertial>
+            <origin xyz="-5.6350962140775215e-05 1.5205580858940896e-16 0.00509999999999998" rpy="0.0 -0.0 0.0" />
+            <mass value="0.026492978776080006" />
+            <inertia ixx="1.8285444846371157e-06" iyy="2.9251497824959527e-06" izz="4.294306015156109e-06" ixy="2.4909660798739376e-20" iyz="3.503219901733492e-21" ixz="7.940933880509066e-22" />
+        </inertial>
+        <visual name="imu_link_visual">
+            <origin xyz="-3.552713678800501e-16 -1.3322676295501878e-17 0.0" rpy="1.1810686754316082e-15 6.591949208711835e-17 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/imu_link.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="imu_link_collision">
+            <origin xyz="-3.552713678800501e-16 -1.3322676295501878e-17 0.0" rpy="1.1810686754316082e-15 6.591949208711835e-17 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/imu_link.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="Camera">
+        <inertial>
+            <origin xyz="-0.0038296036347962494 -0.015567933033174395 0.22949227031766717" rpy="0.0 -0.0 0.0" />
+            <mass value="1.6665816435424958" />
+            <inertia ixx="0.016775953191553228" iyy="0.0180940097108353" izz="0.007744858441272246" ixy="-0.0002982539430942252" iyz="0.001016031602657022" ixz="-0.002606629521919972" />
+        </inertial>
+        <visual name="Camera_visual">
+            <origin xyz="0.0 -6.661338147750939e-18 0.0" rpy="0.0 -0.0 -1.5707963267948966" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Camera.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="Camera_collision">
+            <origin xyz="0.0 -6.661338147750939e-18 0.0" rpy="0.0 -0.0 -1.5707963267948966" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/Camera.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="VLP16_bracket_F">
+        <inertial>
+            <origin xyz="0.16194580170329076 2.4114791337080598e-17 0.015137496577604354" rpy="0.0 -0.0 0.0" />
+            <mass value="0.2998360125960004" />
+            <inertia ixx="0.0002627982315880975" iyy="0.00044730403137876323" izz="0.0006228234355780786" ixy="-2.196982143715411e-19" iyz="-2.0313945232104281e-19" ixz="2.0567917534335817e-05" />
+        </inertial>
+        <visual name="VLP16_bracket_F_visual">
+            <origin xyz="0.24024999999999982 0.0 -1.4210854715202004e-16" rpy="-9.181878561706898e-17 5.99545838851361e-16 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/VLP16_bracket_F.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="VLP16_bracket_F_collision">
+            <origin xyz="0.24024999999999982 0.0 -1.4210854715202004e-16" rpy="-9.181878561706898e-17 5.99545838851361e-16 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/VLP16_bracket_F.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="velodyne_front_top">
+        <inertial>
+            <origin xyz="0.0003948198555689686 -3.609180869499314e-15 0.03615426901123815" rpy="-1.3684555315672045e-48 -0.0 0.0" />
+            <mass value="0.8871540608965255" />
+            <inertia ixx="0.001534606650277318" iyy="0.0015542612528998698" izz="0.0017617879789866924" ixy="1.9585875480289548e-16" iyz="-8.656352379982422e-17" ixz="9.161062727488394e-06" />
+        </inertial>
+        <visual name="velodyne_front_top_visual">
+            <origin xyz="-4.8034113575567975e-09 3.552713678800499e-17 2.6087409921160545e-09" rpy="1.53460242706187e-15 -6.106226635438373e-16 2.0421436646963026e-16" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/velodyne_front_top.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="velodyne_front_top_collision">
+            <origin xyz="-4.8034113575567975e-09 3.552713678800499e-17 2.6087409921160545e-09" rpy="1.53460242706187e-15 -6.106226635438373e-16 2.0421436646963026e-16" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/velodyne_front_top.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="velodyne_rear_bottom">
+        <inertial>
+            <origin xyz="0.00039482465898032614 -3.581218310332285e-15 0.0361542664024973" rpy="0.0 -0.0 0.0" />
+            <mass value="0.8871540608965255" />
+            <inertia ixx="0.0015346066502772565" iyy="0.0015542612528998134" izz="0.0017617879789866842" ixy="1.9275091537304222e-16" iyz="-8.594179104106984e-17" ixz="9.161062727469638e-06" />
+        </inertial>
+        <visual name="velodyne_rear_bottom_visual">
+            <origin xyz="0.0 0.0 7.105427357601002e-17" rpy="-1.2838277286418165e-16 3.8857805861880474e-16 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/velodyne_rear_bottom.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="velodyne_rear_bottom_collision">
+            <origin xyz="0.0 0.0 7.105427357601002e-17" rpy="-1.2838277286418165e-16 3.8857805861880474e-16 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/velodyne_rear_bottom.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <link name="VLP16_bracket_R">
+        <inertial>
+            <origin xyz="-0.16194580170329098 -8.038263779026821e-18 0.015137496577604494" rpy="0.0 -0.0 0.0" />
+            <mass value="0.2998360125960004" />
+            <inertia ixx="0.0002627982315880975" iyy="0.0004473040313787424" izz="0.0006228234355781011" ixy="1.9690003183652249e-19" iyz="-3.6483803278908356e-20" ixz="-2.0567917534339286e-05" />
+        </inertial>
+        <visual name="VLP16_bracket_R_visual">
+            <origin xyz="-0.24025000000000002 0.0 0.0" rpy="0.0 -0.0 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/VLP16_bracket_R.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+        <collision name="VLP16_bracket_R_collision">
+            <origin xyz="-0.24025000000000002 0.0 0.0" rpy="0.0 -0.0 0.0" />
+            <geometry>
+                <mesh filename="package://cartographer_ros/urdf/meshes/VLP16_bracket_R.stl" scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+    <joint name="base_link_Revolute-1" type="revolute">
+        <origin xyz="0.08 -0.212 0.1235" rpy="-1.5707963267948966 -0.0 0.0" />
+        <parent link="base_link" />
+        <child link="arm_R" />
+        <axis xyz="0.0 0.0 1.0" />
+        <limit lower="-0.340339" upper="0.340339" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="base_link_Revolute-2" type="revolute">
+        <origin xyz="0.08 0.212 0.1235" rpy="1.5707963267948966 -0.0 0.0" />
+        <parent link="base_link" />
+        <child link="arm_L" />
+        <axis xyz="0.0 0.0 1.0" />
+        <limit lower="-0.340339" upper="0.340339" effort="1000000" velocity="1000000" />
+    </joint>
+    <joint name="arm_R_Revolute-3" type="continuous">
+        <origin xyz="-0.08 0.09300000000000001 0.0" rpy="1.5707963267948966 -1.232595164407831e-32 -1.5707963267948966" />
+        <parent link="arm_R" />
+        <child link="MDH300_R" />
+        <axis xyz="-1.232595164407831e-32 -1.0 -2.5243548967072375e-29" />
+    </joint>
+    <joint name="arm_L_Revolute-4" type="continuous">
+        <origin xyz="-0.08 -0.09300000000000001 0.0" rpy="1.5707963267948966 4.930380657631324e-32 1.5707963267948966" />
+        <parent link="arm_L" />
+        <child link="MDH300_L" />
+        <axis xyz="4.930380657631324e-32 -0.9999999999999999 -1.5777218104420233e-30" />
+    </joint>
+    <joint name="arm_R_Revolute-7" type="continuous">
+        <origin xyz="0.12 0.11299999999999999 0.0" rpy="1.5707963267948966 -1.232595164407831e-32 -1.5707963267948966" />
+        <parent link="arm_R" />
+        <child link="Omni-wheel_RF" />
+        <axis xyz="-1.232595164407831e-32 -1.0 -2.5243548967072375e-29" />
+    </joint>
+    <joint name="base_link_Revolute-8" type="continuous">
+        <origin xyz="-0.2 -0.20600000000000002 0.0105" rpy="1.5707963267948966 -0.0 0.0" />
+        <parent link="base_link" />
+        <child link="Omni-wheel_RR" />
+        <axis xyz="0.0 0.0 1.0" />
+    </joint>
+    <joint name="arm_L_Revolute-9" type="continuous">
+        <origin xyz="0.12 -0.11299999999999999 0.0" rpy="1.5707963267948966 4.930380657631324e-32 1.5707963267948966" />
+        <parent link="arm_L" />
+        <child link="Omni-wheel_LF" />
+        <axis xyz="4.930380657631324e-32 -0.9999999999999999 -1.5777218104420233e-30" />
+    </joint>
+    <joint name="base_link_Revolute-10" type="continuous">
+        <origin xyz="-0.2 0.20600000000000002 0.0105" rpy="1.5707963267948966 -0.0 0.0" />
+        <parent link="base_link" />
+        <child link="Omni-wheel_LR" />
+        <axis xyz="0.0 0.0 1.0" />
+    </joint>
+    <joint name="MDH300_R_Rigid-11" type="fixed">
+        <origin xyz="0.0 -0.0671 -1.6938421356905567e-30" rpy="1.5707963267948966 1.5707963267948966 0" />
+        <parent link="MDH300_R" />
+        <child link="MDH300_tire_R" />
+    </joint>
+    <joint name="MDH300_L_Rigid-12" type="fixed">
+        <origin xyz="0.0 -0.0671 -4.46772595804549e-33" rpy="-1.5707963267948966 -1.5707963267948966 0" />
+        <parent link="MDH300_L" />
+        <child link="MDH300_tire_L" />
+    </joint>
+    <joint name="Omni-wheel_RF_Rigid-13" type="fixed">
+        <origin xyz="0.0 -0.05199999999999999 0.0" rpy="1.5707963267948966 1.5707963267948966 0" />
+        <parent link="Omni-wheel_RF" />
+        <child link="Omni-wheel_tire_RF" />
+    </joint>
+    <joint name="Omni-wheel_RR_Rigid-14" type="fixed">
+        <origin xyz="0.0 0.0 0.05199999999999999" rpy="0.0 5.473822126268817e-48 0.0" />
+        <parent link="Omni-wheel_RR" />
+        <child link="Omni-wheel_tire_RR" />
+    </joint>
+    <joint name="Omni-wheel_LF_Rigid-16" type="fixed">
+        <origin xyz="0.0 -0.05199999999999999 0.0" rpy="-1.5707963267948966 -1.5707963267948966 0" />
+        <parent link="Omni-wheel_LF" />
+        <child link="Omni-wheel_tire_LF" />
+    </joint>
+    <joint name="Omni-wheel_LR_Rigid-17" type="fixed">
+        <origin xyz="0.0 0.0 -0.05199999999999999" rpy="0.0 -4.265798134272217e-46 0.0" />
+        <parent link="Omni-wheel_LR" />
+        <child link="Omni-wheel_tire_LR" />
+    </joint>
+    <joint name="base_link_Rigid-24" type="fixed">
+        <origin xyz="0.0 0.0 0.1825" rpy="0.0 -0.0 0.0" />
+        <parent link="base_link" />
+        <child link="imu_link" />
+    </joint>
+    <joint name="base_link_Rigid-25" type="fixed">
+        <origin xyz="0.0 0.0 0.3285" rpy="0.0 -0.0 0.0" />
+        <parent link="base_link" />
+        <child link="Camera" />
+    </joint>
+    <joint name="base_link_Rigid-35" type="fixed">
+        <origin xyz="0.0 0.0 0.3285" rpy="0.0 -0.0 0.0" />
+        <parent link="base_link" />
+        <child link="VLP16_bracket_F" />
+    </joint>
+    <joint name="base_link_Rigid-36" type="fixed">
+        <origin xyz="0.0 0.0 0.3285" rpy="0.0 -0.0 0.0" />
+        <parent link="base_link" />
+        <child link="VLP16_bracket_R" />
+    </joint>
+    <joint name="VLP16_bracket_F_Rigid-37" type="fixed">
+        <origin xyz="0.24025 0.0 0.003999999999999986" rpy="0.0 -1.9721522630525295e-31 0.0" />
+        <parent link="VLP16_bracket_F" />
+        <child link="velodyne_front_bottom" />
+    </joint>
+    <joint name="VLP16_bracket_R_Rigid-38" type="fixed">
+        <origin xyz="-0.13798417000000002 0.0 0.02970034999999996" rpy="0.0 -0.4655186488439128 3.141592653589793" />
+        <parent link="VLP16_bracket_R" />
+        <child link="velodyne_rear_top" />
+    </joint>
+    <joint name="VLP16_bracket_R_Rigid-40" type="fixed">
+        <origin xyz="-0.24025 0.0 0.003999999999999986" rpy="0.0 -0.0 0.0" />
+        <parent link="VLP16_bracket_R" />
+        <child link="velodyne_rear_bottom" />
+    </joint>
+    <joint name="VLP16_bracket_F_Rigid-41" type="fixed">
+        <origin xyz="0.13798417000000002 0.0 0.02970034999999996" rpy="0.0 0.4655186488439128 3.141592653589793" />
+        <parent link="VLP16_bracket_F" />
+        <child link="velodyne_front_top" />
+    </joint>
+</robot>
