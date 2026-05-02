@@ -27,7 +27,11 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
+find_package(Boost REQUIRED COMPONENTS iostreams)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_eigen REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(urdf REQUIRED)
 find_package(absl REQUIRED)
 find_package(builtin_interfaces REQUIRED)
 find_package(cartographer REQUIRED)
@@ -65,7 +69,7 @@ include(FindPkgConfig)
 pkg_search_module(CAIRO REQUIRED cairo>=1.12.16)
 
 # Library
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} STATIC
   src/assets_writer.cpp
   src/map_builder_bridge.cpp
   src/msg_conversion.cpp
@@ -119,6 +123,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   ${sensor_msgs_TARGETS}
   tf2_ros::tf2_ros
   ${visualization_msgs_TARGETS}
+  tf2_eigen::tf2_eigen
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE
   ${CAIRO_LIBRARIES}

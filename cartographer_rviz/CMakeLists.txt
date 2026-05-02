@@ -35,6 +35,11 @@ set(BUILD_SHARED_LIBS OFF)
 option(BUILD_GRPC "build features that require Cartographer gRPC support" false)
 google_initialize_cartographer_project()
 
+find_package(Boost REQUIRED COMPONENTS iostreams)
+find_package(tf2_ros REQUIRED)
+find_package(tf2_eigen REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(urdf REQUIRED)
 find_package(absl REQUIRED)
 find_package(cartographer_ros REQUIRED)
 find_package(cartographer_ros_msgs REQUIRED)
@@ -55,7 +60,7 @@ set(rviz_plugins_headers_to_moc
   include/cartographer_rviz/submaps_display.h
 )
 
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} STATIC
   src/drawable_submap.cpp
   src/ogre_slice.cpp
   src/submaps_display.cpp
@@ -74,6 +79,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
   rviz_common::rviz_common
   rviz_rendering::rviz_rendering
   tf2_ros::tf2_ros
+  tf2_eigen::tf2_eigen
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE
   pluginlib::pluginlib
