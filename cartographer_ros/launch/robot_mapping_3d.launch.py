@@ -16,21 +16,22 @@
 """
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.conditions import IfCondition, UnlessCondition
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch_ros.actions import Node, SetRemap
-from launch_ros.substitutions import FindPackageShare
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
 import os
 
 def generate_launch_description():
 
     ## ***** Launch arguments *****
     use_sim_time_arg = DeclareLaunchArgument('use_sim_time', default_value = 'False')
+    
+    pkg_share = get_package_share_directory('cartographer_ros')
+    
     cartographer_config_dir_arg = DeclareLaunchArgument(
         'cartographer_config_dir',
-        default_value = os.path.join(FindPackageShare('cartographer_ros').find('cartographer_ros'), 'configuration_files'),
+        default_value = os.path.join(pkg_share, 'configuration_files'),
         description = 'Full path to config directory')
     configuration_basename_arg = DeclareLaunchArgument(
         'configuration_basename',
@@ -40,19 +41,10 @@ def generate_launch_description():
         'load_state_filename',
         default_value = '',
         description = 'Full path to a pbstream file to load a saved state.')
-    urdf_arg = DeclareLaunchArgument(
-        'urdf',
-        default_value='MRO_ROVER.urdf',
-        description='Name of the URDF file in the urdf directory'
-    )
 
-    pkg_share = FindPackageShare('cartographer_ros').find('cartographer_ros')
-    urdf_file_path = PathJoinSubstitution([
-        pkg_share,
-        'urdf',
-        LaunchConfiguration('urdf')
-    ])
-    with open(urdf_file_path, 'r') as infp:
+    ## ***** File paths ******
+    urdf_file = os.path.join(pkg_share, 'urdf', 'MRO_ROVER.urdf')
+    with open(urdf_file, 'r') as infp:
         robot_desc = infp.read()
 
     ## Robot State Publisher
@@ -90,8 +82,8 @@ def generate_launch_description():
             '-configuration_basename', LaunchConfiguration('configuration_basename'),
             '-load_state_filename', LaunchConfiguration('load_state_filename'),
             '--ros-args',
-            '--remap', 'points2:=/point_cloud',
-            '--remap', 'imu:=/imu_data'],
+            '--remap', 'points2:=/sensor/lidar32/points_raw',
+            '--remap', 'imu:=/sensor/imu/data_raw'],
         output = 'screen'
         )
 
@@ -108,7 +100,6 @@ def generate_launch_description():
         cartographer_config_dir_arg,
         configuration_basename_arg,
         load_state_filename_arg,
-        urdf_arg, 
         # Nodes
         robot_state_publisher_node,
         joint_state_publisher_node,
