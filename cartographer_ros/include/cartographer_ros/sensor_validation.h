@@ -18,12 +18,26 @@
 #define CARTOGRAPHER_ROS_CARTOGRAPHER_ROS_SENSOR_VALIDATION_H
 
 #include "sensor_msgs/msg/imu.hpp"
+#include "sensor_msgs/msg/laser_scan.hpp"
 
 namespace cartographer_ros {
 
 // Returns true if the IMU message is safe to forward to Cartographer, i.e. it
 // claims to provide the required measurements and carries only finite values.
 bool IsImuDataValid(const sensor_msgs::msg::Imu& imu);
+
+// Returns true if the laser scan's header fields satisfy Cartographer's
+// assumptions (non-negative range_min, range_max >= range_min). Individual NaN/
+// Inf/out-of-range points are not a reason to reject the whole scan; they are
+// filtered per-point (see CountUsableRanges / IsLaserScanUsable).
+bool IsLaserScanValid(const sensor_msgs::msg::LaserScan& scan);
+
+// Number of range readings that are finite and within [range_min, range_max].
+int CountUsableRanges(const sensor_msgs::msg::LaserScan& scan);
+
+// Returns true if the scan still carries at least one usable point after
+// per-point filtering. An all-NaN/empty scan is dropped (returns false).
+bool IsLaserScanUsable(const sensor_msgs::msg::LaserScan& scan);
 
 }  // namespace cartographer_ros
 

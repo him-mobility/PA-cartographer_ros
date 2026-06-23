@@ -20,6 +20,7 @@
 
 #include "gtest/gtest.h"
 #include "sensor_msgs/msg/imu.hpp"
+#include "sensor_msgs/msg/laser_scan.hpp"
 
 namespace cartographer_ros {
 namespace {
@@ -65,6 +66,59 @@ TEST(SensorValidation, ImuWithInfAngularVelocityIsInvalid) {
   sensor_msgs::msg::Imu imu = MakeValidImu();
   imu.angular_velocity.z = std::numeric_limits<double>::infinity();
   EXPECT_FALSE(IsImuDataValid(imu));
+}
+
+// A laser scan with sane header fields and a few in-range returns.
+sensor_msgs::msg::LaserScan MakeValidLaserScan() {
+  sensor_msgs::msg::LaserScan scan;
+  scan.range_min = 0.1f;
+  scan.range_max = 30.0f;
+  scan.angle_min = -1.0f;
+  scan.angle_max = 1.0f;
+  scan.angle_increment = 0.5f;
+  scan.ranges = {1.0f, 2.0f, 5.0f, 10.0f};
+  return scan;
+}
+
+TEST(SensorValidation, ValidLaserScanIsValid) {
+  EXPECT_TRUE(IsLaserScanValid(MakeValidLaserScan()));
+}
+
+TEST(SensorValidation, LaserScanWithNegativeRangeMinIsInvalid) {
+  sensor_msgs::msg::LaserScan scan = MakeValidLaserScan();
+  scan.range_min = -0.1f;
+  EXPECT_FALSE(IsLaserScanValid(scan));
+}
+
+TEST(SensorValidation, LaserScanWithRangeMaxBelowRangeMinIsInvalid) {
+  sensor_msgs::msg::LaserScan scan = MakeValidLaserScan();
+  scan.range_max = scan.range_min - 0.01f;
+  EXPECT_FALSE(IsLaserScanValid(scan));
+}
+
+TEST(SensorValidation, CountUsableRangesExcludesNanInfAndOutOfRange) {
+  sensor_msgs::msg::LaserScan scan = MakeValidLaserScan();
+  scan.ranges = {std::numeric_limits<float>::quiet_NaN(),
+                 1.0f,
+                 std::numeric_limits<float>::infinity(),
+                 2.0f,
+                 0.05f,    // below range_min
+                 100.0f};  // above range_max
+  EXPECT_EQ(CountUsableRanges(scan), 2);
+}
+
+TEST(SensorValidation, ScanWithNoUsablePointsIsNotUsable) {
+  sensor_msgs::msg::LaserScan scan = MakeValidLaserScan();
+  scan.ranges = {std::numeric_limits<float>::quiet_NaN(),
+                 std::numeric_limits<float>::infinity(),
+                 1000.0f};
+  EXPECT_FALSE(IsLaserScanUsable(scan));
+}
+
+TEST(SensorValidation, ScanWithSomeUsablePointsIsUsable) {
+  sensor_msgs::msg::LaserScan scan = MakeValidLaserScan();
+  scan.ranges = {std::numeric_limits<float>::quiet_NaN(), 3.0f};
+  EXPECT_TRUE(IsLaserScanUsable(scan));
 }
 
 }  // namespace

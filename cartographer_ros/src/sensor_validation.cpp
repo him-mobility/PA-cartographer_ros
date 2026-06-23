@@ -37,4 +37,25 @@ bool IsImuDataValid(const sensor_msgs::msg::Imu& imu) {
   return true;
 }
 
+bool IsLaserScanValid(const sensor_msgs::msg::LaserScan& scan) {
+  if (!(scan.range_min >= 0.f)) return false;
+  if (!(scan.range_max >= scan.range_min)) return false;
+  return true;
+}
+
+int CountUsableRanges(const sensor_msgs::msg::LaserScan& scan) {
+  int count = 0;
+  for (const float range : scan.ranges) {
+    if (std::isfinite(range) && range >= scan.range_min &&
+        range <= scan.range_max) {
+      ++count;
+    }
+  }
+  return count;
+}
+
+bool IsLaserScanUsable(const sensor_msgs::msg::LaserScan& scan) {
+  return CountUsableRanges(scan) > 0;
+}
+
 }  // namespace cartographer_ros
