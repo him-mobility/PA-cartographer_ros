@@ -25,6 +25,7 @@
 #include "cartographer/sensor/odometry_data.h"
 #include "cartographer/transform/rigid_transform.h"
 #include "cartographer/transform/transform.h"
+#include "cartographer_ros/log_throttle.h"
 #include "cartographer_ros/tf_bridge.h"
 #include "cartographer_ros_msgs/msg/landmark_list.hpp"
 #include <geometry_msgs/msg/transform.hpp>
@@ -92,6 +93,16 @@ class SensorBridge {
       trajectory_builder_;
 
   absl::optional<::cartographer::transform::Rigid3d> ecef_to_local_frame_;
+
+  // Rate-limiters so a continuously bad sensor stream does not flood the log.
+  // One per distinct drop reason; the developer still sees the first occurrence
+  // and a periodic reminder.
+  static constexpr double kDropLogIntervalSeconds = 5.0;
+  LogThrottle imu_invalid_log_throttle_{kDropLogIntervalSeconds};
+  LogThrottle imu_colocation_log_throttle_{kDropLogIntervalSeconds};
+  LogThrottle odometry_invalid_log_throttle_{kDropLogIntervalSeconds};
+  LogThrottle laser_invalid_log_throttle_{kDropLogIntervalSeconds};
+  LogThrottle laser_unusable_log_throttle_{kDropLogIntervalSeconds};
 };
 
 }  // namespace cartographer_ros

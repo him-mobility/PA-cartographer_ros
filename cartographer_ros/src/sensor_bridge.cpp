@@ -54,7 +54,10 @@ std::unique_ptr<carto::sensor::OdometryData> SensorBridge::ToOdometryData(
   // Drop instead of forwarding NaN/Inf poses, which would otherwise corrupt the
   // pose extrapolator and could crash Cartographer's core.
   if (!IsOdometryValid(*msg)) {
-    LOG(ERROR) << "Ignoring odometry message: pose contains non-finite values.";
+    if (odometry_invalid_log_throttle_.ShouldLog()) {
+      LOG(ERROR)
+          << "Ignoring odometry message: pose contains non-finite values.";
+    }
     return nullptr;
   }
   const carto::common::Time time = FromRos(msg->header.stamp);
@@ -126,10 +129,12 @@ std::unique_ptr<carto::sensor::ImuData> SensorBridge::ToImuData(
   // Drop instead of aborting: an IMU that claims to not provide a measurement
   // (covariance[0] == -1) or carries NaN/Inf would otherwise crash the node.
   if (!IsImuDataValid(*msg)) {
-    LOG(ERROR) << "Ignoring IMU message: it either claims to not contain "
-                  "linear acceleration / angular velocity measurements "
-                  "(covariance[0] == -1) or contains non-finite values. See "
-                  "http://docs.ros.org/api/sensor_msgs/html/msg/Imu.html.";
+    if (imu_invalid_log_throttle_.ShouldLog()) {
+      LOG(ERROR) << "Ignoring IMU message: it either claims to not contain "
+                    "linear acceleration / angular velocity measurements "
+                    "(covariance[0] == -1) or contains non-finite values. See "
+                    "http://docs.ros.org/api/sensor_msgs/html/msg/Imu.html.";
+    }
     return nullptr;
   }
 
@@ -140,9 +145,11 @@ std::unique_ptr<carto::sensor::ImuData> SensorBridge::ToImuData(
     return nullptr;
   }
   if (!(sensor_to_tracking->translation().norm() < 1e-5)) {
-    LOG(ERROR) << "Ignoring IMU message: the IMU frame must be colocated with "
-                  "the tracking frame, otherwise transforming linear "
-                  "acceleration into the tracking frame is imprecise.";
+    if (imu_colocation_log_throttle_.ShouldLog()) {
+      LOG(ERROR) << "Ignoring IMU message: the IMU frame must be colocated with "
+                    "the tracking frame, otherwise transforming linear "
+                    "acceleration into the tracking frame is imprecise.";
+    }
     return nullptr;
   }
   return absl::make_unique<carto::sensor::ImuData>(carto::sensor::ImuData{
@@ -166,16 +173,20 @@ void SensorBridge::HandleLaserScanMessage(
   // Drop instead of aborting in the conversion's CHECKs on bad range/angle
   // fields.
   if (!IsLaserScanValid(*msg)) {
-    LOG(ERROR) << "Ignoring LaserScan message: range/angle fields violate "
-                  "Cartographer's assumptions (e.g. range_min < 0 or "
-                  "range_max < range_min).";
+    if (laser_invalid_log_throttle_.ShouldLog()) {
+      LOG(ERROR) << "Ignoring LaserScan message: range/angle fields violate "
+                    "Cartographer's assumptions (e.g. range_min < 0 or "
+                    "range_max < range_min).";
+    }
     return;
   }
   // A scan whose every point is NaN/Inf/out-of-range carries no information;
   // drop it and resume on the next usable scan.
   if (!IsLaserScanUsable(*msg)) {
-    LOG(WARNING) << "Ignoring LaserScan message: no range readings are within "
-                    "[range_min, range_max] (all NaN/Inf/out-of-range).";
+    if (laser_unusable_log_throttle_.ShouldLog()) {
+      LOG(WARNING) << "Ignoring LaserScan message: no range readings are within "
+                      "[range_min, range_max] (all NaN/Inf/out-of-range).";
+    }
     return;
   }
   carto::sensor::PointCloudWithIntensities point_cloud;
