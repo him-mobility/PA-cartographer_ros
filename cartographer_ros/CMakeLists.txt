@@ -305,6 +305,16 @@ if(BUILD_TESTING)
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   )
 
+  # Exception guard for callbacks (header-only template).
+  ament_add_gtest(callback_guard_test
+    src/callback_guard_test.cpp
+    src/log_throttle.cpp
+  )
+  target_include_directories(callback_guard_test PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  )
+  target_link_libraries(callback_guard_test glog::glog)
+
   # Pure sensor-validation functions: fast, ROS-spin-free unit tests.
   ament_add_gtest(sensor_validation_test
     src/sensor_validation_test.cpp
