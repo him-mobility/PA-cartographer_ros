@@ -83,6 +83,7 @@ add_library(${PROJECT_NAME} STATIC
   src/ros_map.cpp
   src/ros_map_writing_points_processor.cpp
   src/sensor_bridge.cpp
+  src/sensor_timeout_monitor.cpp
   src/sensor_validation.cpp
   src/submap.cpp
   src/tf_bridge.cpp
@@ -324,6 +325,15 @@ if(BUILD_TESTING)
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   )
   ament_target_dependencies(sensor_validation_test nav_msgs sensor_msgs)
+
+  # Pure sensor-timeout monitor: deterministic unit tests with injected time.
+  ament_add_gtest(sensor_timeout_monitor_test
+    src/sensor_timeout_monitor_test.cpp
+    src/sensor_timeout_monitor.cpp
+  )
+  target_include_directories(sensor_timeout_monitor_test PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  )
 
   # SensorBridge fault-tolerance: bad sensor messages must be dropped (with a
   # log) instead of aborting the process. Uses a counting fake trajectory
