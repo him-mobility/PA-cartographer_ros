@@ -82,6 +82,7 @@ add_library(${PROJECT_NAME} STATIC
   src/ros_map.cpp
   src/ros_map_writing_points_processor.cpp
   src/sensor_bridge.cpp
+  src/sensor_validation.cpp
   src/submap.cpp
   src/tf_bridge.cpp
   src/time_conversion.cpp
@@ -280,6 +281,20 @@ install(DIRECTORY include/
 install(DIRECTORY configuration_files urdf launch
   DESTINATION share/${PROJECT_NAME}/
 )
+
+if(BUILD_TESTING)
+  find_package(ament_cmake_gtest REQUIRED)
+
+  # Pure sensor-validation functions: fast, ROS-spin-free unit tests.
+  ament_add_gtest(sensor_validation_test
+    src/sensor_validation_test.cpp
+    src/sensor_validation.cpp
+  )
+  target_include_directories(sensor_validation_test PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  )
+  ament_target_dependencies(sensor_validation_test sensor_msgs)
+endif()
 
 ament_export_targets(${PROJECT_NAME})
 ament_export_include_directories(include/${PROJECT_NAME})
