@@ -163,6 +163,21 @@ void SensorBridge::HandleImuMessage(const std::string& sensor_id,
 
 void SensorBridge::HandleLaserScanMessage(
     const std::string& sensor_id, const sensor_msgs::msg::LaserScan::ConstSharedPtr& msg) {
+  // Drop instead of aborting in the conversion's CHECKs on bad range/angle
+  // fields.
+  if (!IsLaserScanValid(*msg)) {
+    LOG(ERROR) << "Ignoring LaserScan message: range/angle fields violate "
+                  "Cartographer's assumptions (e.g. range_min < 0 or "
+                  "range_max < range_min).";
+    return;
+  }
+  // A scan whose every point is NaN/Inf/out-of-range carries no information;
+  // drop it and resume on the next usable scan.
+  if (!IsLaserScanUsable(*msg)) {
+    LOG(WARNING) << "Ignoring LaserScan message: no range readings are within "
+                    "[range_min, range_max] (all NaN/Inf/out-of-range).";
+    return;
+  }
   carto::sensor::PointCloudWithIntensities point_cloud;
   carto::common::Time time;
   std::tie(point_cloud, time) = ToPointCloudWithIntensities(*msg);

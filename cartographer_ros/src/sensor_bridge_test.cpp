@@ -25,6 +25,7 @@
 #include "nav_msgs/msg/odometry.hpp"
 #include "rclcpp/clock.hpp"
 #include "sensor_msgs/msg/imu.hpp"
+#include "sensor_msgs/msg/laser_scan.hpp"
 #include "tf2_ros/buffer.h"
 
 namespace cartographer_ros {
@@ -78,6 +79,12 @@ class SensorBridgeTest : public ::testing::Test {
     odom_to_tracking.child_frame_id = "odom_child";
     odom_to_tracking.transform.rotation.w = 1.0;
     tf_buffer_.setTransform(odom_to_tracking, "test", /*is_static=*/true);
+
+    geometry_msgs::msg::TransformStamped laser_to_tracking;
+    laser_to_tracking.header.frame_id = "tracking";
+    laser_to_tracking.child_frame_id = "laser";
+    laser_to_tracking.transform.rotation.w = 1.0;
+    tf_buffer_.setTransform(laser_to_tracking, "test", /*is_static=*/true);
   }
 
   std::unique_ptr<SensorBridge> MakeBridge() {
@@ -103,6 +110,20 @@ class SensorBridgeTest : public ::testing::Test {
     odometry->child_frame_id = "odom_child";
     odometry->pose.pose.orientation.w = 1.0;
     return odometry;
+  }
+
+  static sensor_msgs::msg::LaserScan::SharedPtr MakeValidLaserScan() {
+    auto scan = std::make_shared<sensor_msgs::msg::LaserScan>();
+    scan->header.frame_id = "laser";
+    scan->header.stamp.sec = 1;
+    scan->range_min = 0.1f;
+    scan->range_max = 30.0f;
+    scan->angle_min = 0.0f;
+    scan->angle_max = 1.0f;
+    scan->angle_increment = 0.5f;
+    scan->time_increment = 0.0f;
+    scan->ranges = {1.0f, 2.0f, 5.0f};
+    return scan;
   }
 
   rclcpp::Clock::SharedPtr clock_;
@@ -139,6 +160,32 @@ TEST_F(SensorBridgeTest, DropsOdometryWithNanPose) {
   odometry->pose.pose.position.x = std::numeric_limits<double>::quiet_NaN();
   MakeBridge()->HandleOdometryMessage("odometry", odometry);
   EXPECT_EQ(builder_.odometry_count, 0);
+}
+
+TEST_F(SensorBridgeTest, ForwardsValidLaserScan) {
+  MakeBridge()->HandleLaserScanMessage("scan", MakeValidLaserScan());
+  EXPECT_EQ(builder_.point_cloud_count, 1);
+}
+
+TEST_F(SensorBridgeTest, DropsLaserScanWithInvalidRangeFields) {
+  auto scan = MakeValidLaserScan();
+  scan->range_min = -1.0f;
+  MakeBridge()->HandleLaserScanMessage("scan", scan);
+  EXPECT_EQ(builder_.point_cloud_count, 0);
+}
+
+TEST_F(SensorBridgeTest, DropsAllNanLaserScanThenResumesOnValidScan) {
+  auto bridge = MakeBridge();
+
+  auto bad = MakeValidLaserScan();
+  bad->ranges = {std::numeric_limits<float>::quiet_NaN(),
+                 std::numeric_limits<float>::quiet_NaN(),
+                 std::numeric_limits<float>::quiet_NaN()};
+  bridge->HandleLaserScanMessage("scan", bad);
+  EXPECT_EQ(builder_.point_cloud_count, 0);
+
+  bridge->HandleLaserScanMessage("scan", MakeValidLaserScan());
+  EXPECT_EQ(builder_.point_cloud_count, 1);
 }
 
 }  // namespace
