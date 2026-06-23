@@ -71,6 +71,7 @@ pkg_search_module(CAIRO REQUIRED cairo>=1.12.16)
 # Library
 add_library(${PROJECT_NAME} STATIC
   src/assets_writer.cpp
+  src/log_throttle.cpp
   src/map_builder_bridge.cpp
   src/msg_conversion.cpp
   src/node_constants.cpp
@@ -284,6 +285,15 @@ install(DIRECTORY configuration_files urdf launch
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
+
+  # Pure log-rate-limiter: deterministic unit tests with injected time.
+  ament_add_gtest(log_throttle_test
+    src/log_throttle_test.cpp
+    src/log_throttle.cpp
+  )
+  target_include_directories(log_throttle_test PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  )
 
   # Pure sensor-validation functions: fast, ROS-spin-free unit tests.
   ament_add_gtest(sensor_validation_test
