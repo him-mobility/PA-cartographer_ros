@@ -16,6 +16,8 @@
 
 #include "cartographer_ros/sensor_validation.h"
 
+#include <limits>
+
 #include "gtest/gtest.h"
 #include "sensor_msgs/msg/imu.hpp"
 
@@ -39,6 +41,30 @@ sensor_msgs::msg::Imu MakeValidImu() {
 
 TEST(SensorValidation, ValidImuIsValid) {
   EXPECT_TRUE(IsImuDataValid(MakeValidImu()));
+}
+
+TEST(SensorValidation, ImuWithoutLinearAccelerationIsInvalid) {
+  sensor_msgs::msg::Imu imu = MakeValidImu();
+  imu.linear_acceleration_covariance[0] = -1;
+  EXPECT_FALSE(IsImuDataValid(imu));
+}
+
+TEST(SensorValidation, ImuWithoutAngularVelocityIsInvalid) {
+  sensor_msgs::msg::Imu imu = MakeValidImu();
+  imu.angular_velocity_covariance[0] = -1;
+  EXPECT_FALSE(IsImuDataValid(imu));
+}
+
+TEST(SensorValidation, ImuWithNanLinearAccelerationIsInvalid) {
+  sensor_msgs::msg::Imu imu = MakeValidImu();
+  imu.linear_acceleration.y = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_FALSE(IsImuDataValid(imu));
+}
+
+TEST(SensorValidation, ImuWithInfAngularVelocityIsInvalid) {
+  sensor_msgs::msg::Imu imu = MakeValidImu();
+  imu.angular_velocity.z = std::numeric_limits<double>::infinity();
+  EXPECT_FALSE(IsImuDataValid(imu));
 }
 
 }  // namespace

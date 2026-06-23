@@ -16,8 +16,25 @@
 
 #include "cartographer_ros/sensor_validation.h"
 
-namespace cartographer_ros {
+#include <cmath>
 
-bool IsImuDataValid(const sensor_msgs::msg::Imu& /* imu */) { return true; }
+namespace cartographer_ros {
+namespace {
+
+bool IsFinite(const geometry_msgs::msg::Vector3& v) {
+  return std::isfinite(v.x) && std::isfinite(v.y) && std::isfinite(v.z);
+}
+
+}  // namespace
+
+bool IsImuDataValid(const sensor_msgs::msg::Imu& imu) {
+  // A covariance[0] of -1 is the ROS convention for "this measurement is not
+  // provided"; Cartographer requires both measurements to operate.
+  if (imu.linear_acceleration_covariance[0] == -1) return false;
+  if (imu.angular_velocity_covariance[0] == -1) return false;
+  if (!IsFinite(imu.linear_acceleration)) return false;
+  if (!IsFinite(imu.angular_velocity)) return false;
+  return true;
+}
 
 }  // namespace cartographer_ros
