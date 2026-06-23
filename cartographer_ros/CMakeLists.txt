@@ -294,6 +294,24 @@ if(BUILD_TESTING)
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   )
   ament_target_dependencies(sensor_validation_test nav_msgs sensor_msgs)
+
+  # SensorBridge fault-tolerance: bad sensor messages must be dropped (with a
+  # log) instead of aborting the process. Uses a counting fake trajectory
+  # builder, so it needs the full library + cartographer/tf2/rclcpp stack.
+  ament_add_gtest(sensor_bridge_test
+    src/sensor_bridge_test.cpp
+  )
+  target_include_directories(sensor_bridge_test PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  )
+  target_link_libraries(sensor_bridge_test
+    ${PROJECT_NAME}
+    cartographer
+    rclcpp::rclcpp
+    tf2_ros::tf2_ros
+  )
+  ament_target_dependencies(sensor_bridge_test
+    geometry_msgs nav_msgs rclcpp sensor_msgs tf2_ros)
 endif()
 
 ament_export_targets(${PROJECT_NAME})

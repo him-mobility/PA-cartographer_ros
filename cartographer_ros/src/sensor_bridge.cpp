@@ -18,6 +18,7 @@
 
 #include "absl/memory/memory.h"
 #include "cartographer_ros/msg_conversion.h"
+#include "cartographer_ros/sensor_validation.h"
 #include "cartographer_ros/time_conversion.h"
 
 namespace cartographer_ros {
@@ -116,16 +117,15 @@ void SensorBridge::HandleLandmarkMessage(
 
 std::unique_ptr<carto::sensor::ImuData> SensorBridge::ToImuData(
     const sensor_msgs::msg::Imu::ConstSharedPtr& msg) {
-  CHECK_NE(msg->linear_acceleration_covariance[0], -1)
-      << "Your IMU data claims to not contain linear acceleration measurements "
-         "by setting linear_acceleration_covariance[0] to -1. Cartographer "
-         "requires this data to work. See "
-         "http://docs.ros.org/api/sensor_msgs/html/msg/Imu.html.";
-  CHECK_NE(msg->angular_velocity_covariance[0], -1)
-      << "Your IMU data claims to not contain angular velocity measurements "
-         "by setting angular_velocity_covariance[0] to -1. Cartographer "
-         "requires this data to work. See "
-         "http://docs.ros.org/api/sensor_msgs/html/msg/Imu.html.";
+  // Drop instead of aborting: an IMU that claims to not provide a measurement
+  // (covariance[0] == -1) or carries NaN/Inf would otherwise crash the node.
+  if (!IsImuDataValid(*msg)) {
+    LOG(ERROR) << "Ignoring IMU message: it either claims to not contain "
+                  "linear acceleration / angular velocity measurements "
+                  "(covariance[0] == -1) or contains non-finite values. See "
+                  "http://docs.ros.org/api/sensor_msgs/html/msg/Imu.html.";
+    return nullptr;
+  }
 
   const carto::common::Time time = FromRos(msg->header.stamp);
   const auto sensor_to_tracking = tf_bridge_.LookupToTracking(
@@ -133,10 +133,12 @@ std::unique_ptr<carto::sensor::ImuData> SensorBridge::ToImuData(
   if (sensor_to_tracking == nullptr) {
     return nullptr;
   }
-  CHECK(sensor_to_tracking->translation().norm() < 1e-5)
-      << "The IMU frame must be colocated with the tracking frame. "
-         "Transforming linear acceleration into the tracking frame will "
-         "otherwise be imprecise.";
+  if (!(sensor_to_tracking->translation().norm() < 1e-5)) {
+    LOG(ERROR) << "Ignoring IMU message: the IMU frame must be colocated with "
+                  "the tracking frame, otherwise transforming linear "
+                  "acceleration into the tracking frame is imprecise.";
+    return nullptr;
+  }
   return absl::make_unique<carto::sensor::ImuData>(carto::sensor::ImuData{
       time, sensor_to_tracking->rotation() * ToEigen(msg->linear_acceleration),
       sensor_to_tracking->rotation() * ToEigen(msg->angular_velocity)});
