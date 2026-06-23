@@ -286,6 +286,16 @@ install(DIRECTORY configuration_files urdf launch
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
 
+  # Pure node helpers (topic-name expansion, pbstream filename check).
+  ament_add_gtest(node_constants_test
+    src/node_constants_test.cpp
+    src/node_constants.cpp
+  )
+  target_include_directories(node_constants_test PRIVATE
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+  )
+  target_link_libraries(node_constants_test glog::glog)
+
   # Pure log-rate-limiter: deterministic unit tests with injected time.
   ament_add_gtest(log_throttle_test
     src/log_throttle_test.cpp

@@ -54,6 +54,9 @@ constexpr int kLatestOnlyPublisherQueueSize = 1;
 std::vector<std::string> ComputeRepeatedTopicNames(const std::string& topic,
                                                    int num_topics);
 
+// Returns true if 'filename' ends with the ".pbstream" suffix.
+bool IsPbstreamFilename(const std::string& filename);
+
 }  // namespace cartographer_ros
 
 #endif  // CARTOGRAPHER_ROS_CARTOGRAPHER_ROS_NODE_CONSTANTS_H

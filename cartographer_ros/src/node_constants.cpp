@@ -22,7 +22,11 @@ namespace cartographer_ros {
 
 std::vector<std::string> ComputeRepeatedTopicNames(const std::string& topic,
                                                    const int num_topics) {
-  CHECK_GE(num_topics, 0);
+  if (num_topics < 0) {
+    LOG(ERROR) << "Ignoring negative topic count (" << num_topics
+               << ") for topic '" << topic << "'; using none.";
+    return {};
+  }
   if (num_topics == 1) {
     return {topic};
   }
@@ -32,6 +36,15 @@ std::vector<std::string> ComputeRepeatedTopicNames(const std::string& topic,
     topics.emplace_back(topic + "_" + std::to_string(i + 1));
   }
   return topics;
+}
+
+bool IsPbstreamFilename(const std::string& filename) {
+  const std::string suffix = ".pbstream";
+  if (filename.size() < suffix.size()) {
+    return false;
+  }
+  return filename.compare(filename.size() - suffix.size(), suffix.size(),
+                          suffix) == 0;
 }
 
 }  // namespace cartographer_ros
