@@ -17,6 +17,7 @@
 #ifndef CARTOGRAPHER_ROS_CARTOGRAPHER_ROS_SENSOR_VALIDATION_H
 #define CARTOGRAPHER_ROS_CARTOGRAPHER_ROS_SENSOR_VALIDATION_H
 
+#include "nav_msgs/msg/odometry.hpp"
 #include "sensor_msgs/msg/imu.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
 
@@ -38,6 +39,9 @@ int CountUsableRanges(const sensor_msgs::msg::LaserScan& scan);
 // Returns true if the scan still carries at least one usable point after
 // per-point filtering. An all-NaN/empty scan is dropped (returns false).
 bool IsLaserScanUsable(const sensor_msgs::msg::LaserScan& scan);
+
+// Returns true if the odometry pose (position and orientation) is finite.
+bool IsOdometryValid(const nav_msgs::msg::Odometry& odometry);
 
 }  // namespace cartographer_ros
 

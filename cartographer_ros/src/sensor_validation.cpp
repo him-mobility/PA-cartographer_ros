@@ -58,4 +58,13 @@ bool IsLaserScanUsable(const sensor_msgs::msg::LaserScan& scan) {
   return CountUsableRanges(scan) > 0;
 }
 
+bool IsOdometryValid(const nav_msgs::msg::Odometry& odometry) {
+  const auto& position = odometry.pose.pose.position;
+  const auto& orientation = odometry.pose.pose.orientation;
+  return std::isfinite(position.x) && std::isfinite(position.y) &&
+         std::isfinite(position.z) && std::isfinite(orientation.x) &&
+         std::isfinite(orientation.y) && std::isfinite(orientation.z) &&
+         std::isfinite(orientation.w);
+}
+
 }  // namespace cartographer_ros

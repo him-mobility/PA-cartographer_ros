@@ -19,6 +19,7 @@
 #include <limits>
 
 #include "gtest/gtest.h"
+#include "nav_msgs/msg/odometry.hpp"
 #include "sensor_msgs/msg/imu.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
 
@@ -119,6 +120,29 @@ TEST(SensorValidation, ScanWithSomeUsablePointsIsUsable) {
   sensor_msgs::msg::LaserScan scan = MakeValidLaserScan();
   scan.ranges = {std::numeric_limits<float>::quiet_NaN(), 3.0f};
   EXPECT_TRUE(IsLaserScanUsable(scan));
+}
+
+// Odometry with an identity-ish, finite pose.
+nav_msgs::msg::Odometry MakeValidOdometry() {
+  nav_msgs::msg::Odometry odometry;
+  odometry.pose.pose.orientation.w = 1.0;
+  return odometry;
+}
+
+TEST(SensorValidation, ValidOdometryIsValid) {
+  EXPECT_TRUE(IsOdometryValid(MakeValidOdometry()));
+}
+
+TEST(SensorValidation, OdometryWithNanPositionIsInvalid) {
+  nav_msgs::msg::Odometry odometry = MakeValidOdometry();
+  odometry.pose.pose.position.x = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_FALSE(IsOdometryValid(odometry));
+}
+
+TEST(SensorValidation, OdometryWithInfOrientationIsInvalid) {
+  nav_msgs::msg::Odometry odometry = MakeValidOdometry();
+  odometry.pose.pose.orientation.z = std::numeric_limits<double>::infinity();
+  EXPECT_FALSE(IsOdometryValid(odometry));
 }
 
 }  // namespace

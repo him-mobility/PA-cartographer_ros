@@ -293,7 +293,7 @@ if(BUILD_TESTING)
   target_include_directories(sensor_validation_test PRIVATE
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
   )
-  ament_target_dependencies(sensor_validation_test sensor_msgs)
+  ament_target_dependencies(sensor_validation_test nav_msgs sensor_msgs)
 endif()
 
 ament_export_targets(${PROJECT_NAME})
