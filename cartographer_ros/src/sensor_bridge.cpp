@@ -51,6 +51,12 @@ SensorBridge::SensorBridge(
 
 std::unique_ptr<carto::sensor::OdometryData> SensorBridge::ToOdometryData(
     const nav_msgs::msg::Odometry::ConstSharedPtr& msg) {
+  // Drop instead of forwarding NaN/Inf poses, which would otherwise corrupt the
+  // pose extrapolator and could crash Cartographer's core.
+  if (!IsOdometryValid(*msg)) {
+    LOG(ERROR) << "Ignoring odometry message: pose contains non-finite values.";
+    return nullptr;
+  }
   const carto::common::Time time = FromRos(msg->header.stamp);
   const auto sensor_to_tracking = tf_bridge_.LookupToTracking(
       time, CheckNoLeadingSlash(msg->child_frame_id));

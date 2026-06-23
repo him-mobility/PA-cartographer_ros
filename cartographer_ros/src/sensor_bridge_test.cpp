@@ -22,6 +22,7 @@
 
 #include "geometry_msgs/msg/transform_stamped.hpp"
 #include "gtest/gtest.h"
+#include "nav_msgs/msg/odometry.hpp"
 #include "rclcpp/clock.hpp"
 #include "sensor_msgs/msg/imu.hpp"
 #include "tf2_ros/buffer.h"
@@ -71,6 +72,12 @@ class SensorBridgeTest : public ::testing::Test {
     imu_to_tracking.child_frame_id = "imu";
     imu_to_tracking.transform.rotation.w = 1.0;
     tf_buffer_.setTransform(imu_to_tracking, "test", /*is_static=*/true);
+
+    geometry_msgs::msg::TransformStamped odom_to_tracking;
+    odom_to_tracking.header.frame_id = "tracking";
+    odom_to_tracking.child_frame_id = "odom_child";
+    odom_to_tracking.transform.rotation.w = 1.0;
+    tf_buffer_.setTransform(odom_to_tracking, "test", /*is_static=*/true);
   }
 
   std::unique_ptr<SensorBridge> MakeBridge() {
@@ -87,6 +94,15 @@ class SensorBridgeTest : public ::testing::Test {
     imu->angular_velocity_covariance[0] = 0.0;
     imu->linear_acceleration.z = 9.81;
     return imu;
+  }
+
+  static nav_msgs::msg::Odometry::SharedPtr MakeValidOdometry() {
+    auto odometry = std::make_shared<nav_msgs::msg::Odometry>();
+    odometry->header.frame_id = "odom";
+    odometry->header.stamp.sec = 1;
+    odometry->child_frame_id = "odom_child";
+    odometry->pose.pose.orientation.w = 1.0;
+    return odometry;
   }
 
   rclcpp::Clock::SharedPtr clock_;
@@ -111,6 +127,18 @@ TEST_F(SensorBridgeTest, DropsImuWithNanValues) {
   imu->angular_velocity.x = std::numeric_limits<double>::quiet_NaN();
   MakeBridge()->HandleImuMessage("imu", imu);
   EXPECT_EQ(builder_.imu_count, 0);
+}
+
+TEST_F(SensorBridgeTest, ForwardsValidOdometry) {
+  MakeBridge()->HandleOdometryMessage("odometry", MakeValidOdometry());
+  EXPECT_EQ(builder_.odometry_count, 1);
+}
+
+TEST_F(SensorBridgeTest, DropsOdometryWithNanPose) {
+  auto odometry = MakeValidOdometry();
+  odometry->pose.pose.position.x = std::numeric_limits<double>::quiet_NaN();
+  MakeBridge()->HandleOdometryMessage("odometry", odometry);
+  EXPECT_EQ(builder_.odometry_count, 0);
 }
 
 }  // namespace
