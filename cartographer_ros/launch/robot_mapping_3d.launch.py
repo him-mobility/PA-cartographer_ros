@@ -84,7 +84,12 @@ def generate_launch_description():
             '--ros-args',
             '--remap', 'points2:=/sensor/lidar32/points_raw',
             '--remap', 'imu:=/sensor/imu/data_raw'],
-        output = 'screen'
+        output = 'screen',
+        # Defense in depth: if Cartographer ever dies despite the in-process
+        # fault tolerance, restart it automatically without taking down the
+        # rest of the robot's nodes.
+        respawn = True,
+        respawn_delay = 2.0
         )
 
     cartographer_occupancy_grid_node = Node(
