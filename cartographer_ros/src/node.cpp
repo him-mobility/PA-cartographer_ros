@@ -32,6 +32,7 @@
 #include "cartographer/sensor/point_cloud.h"
 #include "cartographer/transform/rigid_transform.h"
 #include "cartographer/transform/transform.h"
+#include "cartographer_ros/callback_guard.h"
 #include "cartographer_ros/metrics/family_factory.h"
 #include "cartographer_ros/msg_conversion.h"
 #include "cartographer_ros/sensor_bridge.h"
@@ -64,10 +65,16 @@ template <typename MessageType>
                           const typename MessageType::ConstSharedPtr&),
     const int trajectory_id, const std::string& topic,
     ::rclcpp::Node::SharedPtr node_handle, Node* const node) {
+  // One throttle per subscription so a continuously failing callback logs
+  // periodically instead of on every message.
+  auto exception_throttle = std::make_shared<LogThrottle>(5.0);
   return node_handle->create_subscription<MessageType>(
       topic, rclcpp::SensorDataQoS(),
-      [node, handler, trajectory_id, topic](const typename MessageType::ConstSharedPtr msg) {
-            (node->*handler)(trajectory_id, topic, msg);
+      [node, handler, trajectory_id, topic, exception_throttle](
+          const typename MessageType::ConstSharedPtr msg) {
+            RunGuarded("callback for topic '" + topic + "'",
+                       *exception_throttle,
+                       [&] { (node->*handler)(trajectory_id, topic, msg); });
           });
 }
 
