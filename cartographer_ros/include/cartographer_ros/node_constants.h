@@ -50,6 +50,11 @@ constexpr double kTopicMismatchCheckDelaySec = 3.0;
 constexpr int kInfiniteSubscriberQueueSize = 0;
 constexpr int kLatestOnlyPublisherQueueSize = 1;
 
+// A sensor is considered timed out if no message arrives within this many
+// seconds; sensor liveness is re-checked at this period.
+constexpr double kSensorTimeoutSeconds = 5.0;
+constexpr double kSensorTimeoutCheckPeriodSec = 2.0;
+
 // For multiple topics adds numbers to the topic name and returns the list.
 std::vector<std::string> ComputeRepeatedTopicNames(const std::string& topic,
                                                    int num_topics);

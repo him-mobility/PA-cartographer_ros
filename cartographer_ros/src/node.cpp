@@ -73,8 +73,10 @@ template <typename MessageType>
       [node, handler, trajectory_id, topic, exception_throttle](
           const typename MessageType::ConstSharedPtr msg) {
             RunGuarded("callback for topic '" + topic + "'",
-                       *exception_throttle,
-                       [&] { (node->*handler)(trajectory_id, topic, msg); });
+                       *exception_throttle, [&] {
+                         node->RecordSensorActivity(topic);
+                         (node->*handler)(trajectory_id, topic, msg);
+                       });
           });
 }
 
@@ -190,6 +192,11 @@ Node::Node(
     std::chrono::milliseconds(int(kConstraintPublishPeriodSec * 1000)),
     [this]() {
       PublishConstraintList();
+    });
+  sensor_timeout_timer_ = node_->create_wall_timer(
+    std::chrono::milliseconds(int(kSensorTimeoutCheckPeriodSec * 1000)),
+    [this]() {
+      CheckSensorTimeouts();
     });
 }
 
@@ -924,6 +931,23 @@ void Node::MaybeWarnAboutTopicMismatch() {
 //    LOG(WARNING) << "Currently available topics are: "
 //                 << published_topics_string.str();
 //  }
+}
+
+void Node::RecordSensorActivity(const std::string& topic) {
+  absl::MutexLock lock(&mutex_);
+  sensor_timeout_monitor_.RecordData(topic, node_->now().seconds());
+}
+
+void Node::CheckSensorTimeouts() {
+  absl::MutexLock lock(&mutex_);
+  for (const std::string& topic :
+       sensor_timeout_monitor_.TimedOutSensors(node_->now().seconds())) {
+    // Warn but keep running: SLAM continues (degraded) and recovers
+    // automatically once the sensor resumes (this warning then stops).
+    LOG(WARNING) << "No data received on sensor topic '" << topic
+                 << "' for over " << kSensorTimeoutSeconds
+                 << " s. Cartographer keeps running; check the sensor/driver.";
+  }
 }
 
 }  // namespace cartographer_ros

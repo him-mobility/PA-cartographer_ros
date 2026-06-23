@@ -32,6 +32,7 @@
 #include "cartographer_ros/metrics/family_factory.h"
 #include "cartographer_ros/node_constants.h"
 #include "cartographer_ros/node_options.h"
+#include "cartographer_ros/sensor_timeout_monitor.h"
 #include "cartographer_ros/trajectory_options.h"
 #include "cartographer_ros_msgs/srv/finish_trajectory.hpp"
 #include "cartographer_ros_msgs/srv/get_trajectory_states.hpp"
@@ -113,6 +114,9 @@ class Node {
   void HandlePointCloud2Message(int trajectory_id, const std::string& sensor_id,
                                 const sensor_msgs::msg::PointCloud2::ConstSharedPtr& msg);
 
+  // Records that a message arrived on 'topic' (sensor liveness tracking).
+  void RecordSensorActivity(const std::string& topic);
+
   // Serializes the complete Node state.
   void SerializeState(const std::string& filename,
                       const bool include_unfinished_submaps);
@@ -166,6 +170,8 @@ class Node {
   void PublishTrajectoryNodeList();
   void PublishLandmarkPosesList();
   void PublishConstraintList();
+  // Periodically warns about sensors that have stopped delivering data.
+  void CheckSensorTimeouts();
   bool ValidateTrajectoryOptions(const TrajectoryOptions& options);
   bool ValidateTopicNames(const TrajectoryOptions& options);
   cartographer_ros_msgs::msg::StatusResponse FinishTrajectoryUnderLock(
@@ -240,6 +246,10 @@ class Node {
   ::rclcpp::TimerBase::SharedPtr landmark_pose_list_timer_;
   ::rclcpp::TimerBase::SharedPtr constrain_list_timer_;
   ::rclcpp::TimerBase::SharedPtr maybe_warn_about_topic_mismatch_timer_;
+  ::rclcpp::TimerBase::SharedPtr sensor_timeout_timer_;
+
+  // Detects sensors that stop delivering data (disconnected, dead driver).
+  SensorTimeoutMonitor sensor_timeout_monitor_{kSensorTimeoutSeconds};
 };
 
 }  // namespace cartographer_ros
