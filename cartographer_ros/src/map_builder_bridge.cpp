@@ -20,6 +20,7 @@
 #include "cartographer/io/color.h"
 #include "cartographer/io/proto_stream.h"
 #include "cartographer_ros/msg_conversion.h"
+#include "cartographer_ros/node_constants.h"
 #include "cartographer_ros/time_conversion.h"
 #include "cartographer_ros_msgs/msg/status_code.hpp"
 #include "cartographer_ros_msgs/msg/status_response.hpp"
@@ -105,18 +106,18 @@ MapBuilderBridge::MapBuilderBridge(
       map_builder_(std::move(map_builder)),
       tf_buffer_(tf_buffer) {}
 
-void MapBuilderBridge::LoadState(const std::string& state_filename,
+bool MapBuilderBridge::LoadState(const std::string& state_filename,
                                  bool load_frozen_state) {
-  // Check if suffix of the state file is ".pbstream".
-  const std::string suffix = ".pbstream";
-  CHECK_EQ(state_filename.substr(
-               std::max<int>(state_filename.size() - suffix.size(), 0)),
-           suffix)
-      << "The file containing the state to be loaded must be a "
-         ".pbstream file.";
+  // Reject instead of aborting: a wrong path/extension must not crash the node.
+  if (!IsPbstreamFilename(state_filename)) {
+    LOG(ERROR) << "Cannot load state '" << state_filename
+               << "': the file to load must be a .pbstream file. Skipping.";
+    return false;
+  }
   LOG(INFO) << "Loading saved state '" << state_filename << "'...";
   cartographer::io::ProtoStreamReader stream(state_filename);
   map_builder_->LoadState(&stream, load_frozen_state);
+  return true;
 }
 
 int MapBuilderBridge::AddTrajectory(

@@ -637,7 +637,11 @@ bool Node::handleStartTrajectory(
 
 void Node::StartTrajectoryWithDefaultTopics(const TrajectoryOptions& options) {
   absl::MutexLock lock(&mutex_);
-  CHECK(ValidateTrajectoryOptions(options));
+  // Refuse instead of aborting: invalid options must not crash the node.
+  if (!ValidateTrajectoryOptions(options)) {
+    LOG(ERROR) << "Not starting trajectory: invalid trajectory options.";
+    return;
+  }
   AddTrajectory(options);
 }
 
@@ -878,10 +882,10 @@ void Node::SerializeState(const std::string& filename,
       << "Could not write state.";
 }
 
-void Node::LoadState(const std::string& state_filename,
+bool Node::LoadState(const std::string& state_filename,
                      const bool load_frozen_state) {
   absl::MutexLock lock(&mutex_);
-  map_builder_bridge_->LoadState(state_filename, load_frozen_state);
+  return map_builder_bridge_->LoadState(state_filename, load_frozen_state);
 }
 
 // TODO: find ROS equivalent to ros::master::getTopics

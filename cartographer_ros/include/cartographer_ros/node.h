@@ -117,8 +117,9 @@ class Node {
   void SerializeState(const std::string& filename,
                       const bool include_unfinished_submaps);
 
-  // Loads a serialized SLAM state from a .pbstream file.
-  void LoadState(const std::string& state_filename, bool load_frozen_state);
+  // Loads a serialized SLAM state from a .pbstream file. Returns false (without
+  // crashing) if the file is not a valid .pbstream path.
+  bool LoadState(const std::string& state_filename, bool load_frozen_state);
 
  private:
   struct Subscriber {

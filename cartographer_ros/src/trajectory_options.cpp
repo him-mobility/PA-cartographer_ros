@@ -27,13 +27,20 @@ namespace cartographer_ros {
 namespace {
 
 void CheckTrajectoryOptions(const TrajectoryOptions& options) {
-  CHECK_GE(options.num_subdivisions_per_laser_scan, 1);
-  CHECK_GE(options.num_laser_scans + options.num_multi_echo_laser_scans +
-               options.num_point_clouds,
-           1)
-      << "Configuration error: 'num_laser_scans', "
-         "'num_multi_echo_laser_scans' and 'num_point_clouds' are "
-         "all zero, but at least one is required.";
+  // Log configuration problems instead of aborting so a misconfiguration does
+  // not take down the whole node.
+  if (options.num_subdivisions_per_laser_scan < 1) {
+    LOG(ERROR) << "Configuration error: 'num_subdivisions_per_laser_scan' must "
+                  "be >= 1, got "
+               << options.num_subdivisions_per_laser_scan << ".";
+  }
+  if (options.num_laser_scans + options.num_multi_echo_laser_scans +
+          options.num_point_clouds <
+      1) {
+    LOG(ERROR) << "Configuration error: 'num_laser_scans', "
+                  "'num_multi_echo_laser_scans' and 'num_point_clouds' are all "
+                  "zero, but at least one is required.";
+  }
 }
 
 }  // namespace
